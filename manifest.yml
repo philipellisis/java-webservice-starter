@@ -1,0 +1,7 @@
+---
+applications:
+  - name: webservice-phil
+    buildpack: java_buildpack
+    path: target/test-0.0.1-SNAPSHOT.jar
+services:
+      - phils-postgres
