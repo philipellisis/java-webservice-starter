@@ -43,8 +43,9 @@ public class Webservices
 	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
-    public void setDataSource(DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) throws SQLException {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        conn = dataSource.getConnection();
     }
 	
 	
@@ -68,18 +69,11 @@ public class Webservices
 	@POST
 	@Path("/")
 	public Response materialpost(BathroomSitePostBody body){
-		//KeyHolder holder = new GeneratedKeyHolder();
-		//jdbcTemplate.update(new PreparedStatementCreator() {
-			//@Override
-			//public PreparedStatement createPreparedStatement(Connection arg0) throws SQLException {
-			//	return new BathroomSitePostStatement(body).createPreparedStatement(conn);
-			//}}, holder);
 		
+		KeyHolder holder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new BathroomSitePostStatement(body), holder);
 		
-		int[] types = new int[] { Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.DOUBLE, Types.DOUBLE };
-		Object[] data = new Object[] {body.getGender(), body.getNumberStalls(), body.getNumberUrinals(), body.getLatitude(), body.getLongitude()};
-		jdbcTemplate.update("insert into toilet.bathroom_site (gender, number_stalls, number_urinals, longitude, latitude) values (?,?,?,?,?)", data, types);
-		return handleResult(new SuccessDataModel("Success", "200", "inserted"), Status.OK);
+		return handleResult(new SuccessDataModel("Success", "200", holder.getKeys().get("id").toString()), Status.OK);
 	}
 	protected Response handleResult(final Object entity, Response.Status myStatus) {
 		ResponseBuilder responseBuilder = Response.status(myStatus);
