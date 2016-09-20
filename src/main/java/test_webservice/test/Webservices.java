@@ -1,10 +1,15 @@
 package test_webservice.test;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.List;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -17,6 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 
@@ -42,13 +50,36 @@ public class Webservices
 	
 	private Connection conn;
 	@GET
-	@Path("/{materialid}")
-	public Response material(@PathParam("materialid") String materialId){
+	@Path("/{bathroomSiteId}")
+	public Response getBathroomSite(@PathParam("bathroomSiteId") int bathroomSiteId){
 
-		int rowCount = jdbcTemplate.queryForObject("select count(*) from phil.users", Integer.class);
+		BathroomSitePostBody bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new BathroomSiteRowMapper(), bathroomSiteId);
+		return handleResult(bathroomSitePostBody, Status.OK);
+	}
+	
+	@GET
+	@Path("/")
+	public Response getBathroomSites(){
+
+		List<BathroomSitePostBody> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new BathroomSiteRowMapper());
+		return handleResult(bathroomSitePostBody, Status.OK);
+	}
+	
+	@POST
+	@Path("/")
+	public Response materialpost(BathroomSitePostBody body){
+		//KeyHolder holder = new GeneratedKeyHolder();
+		//jdbcTemplate.update(new PreparedStatementCreator() {
+			//@Override
+			//public PreparedStatement createPreparedStatement(Connection arg0) throws SQLException {
+			//	return new BathroomSitePostStatement(body).createPreparedStatement(conn);
+			//}}, holder);
 		
 		
-		return handleResult(new SuccessDataModel("Success", "200", Integer.toString(rowCount)), Status.OK);
+		int[] types = new int[] { Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.DOUBLE, Types.DOUBLE };
+		Object[] data = new Object[] {body.getGender(), body.getNumberStalls(), body.getNumberUrinals(), body.getLatitude(), body.getLongitude()};
+		jdbcTemplate.update("insert into toilet.bathroom_site (gender, number_stalls, number_urinals, longitude, latitude) values (?,?,?,?,?)", data, types);
+		return handleResult(new SuccessDataModel("Success", "200", "inserted"), Status.OK);
 	}
 	protected Response handleResult(final Object entity, Response.Status myStatus) {
 		ResponseBuilder responseBuilder = Response.status(myStatus);
@@ -56,4 +87,6 @@ public class Webservices
 		responseBuilder.entity(entity);
 		return responseBuilder.build();
 	}
+	
+	
 }
