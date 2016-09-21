@@ -53,16 +53,14 @@ public class Webservices
 	@GET
 	@Path("/{bathroomSiteId}")
 	public Response getBathroomSite(@PathParam("bathroomSiteId") int bathroomSiteId){
-
-		BathroomSitePostBody bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new BathroomSiteRowMapper(), bathroomSiteId);
+		Object bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new GenericRowMapper(new BathroomSitePostBody()), bathroomSiteId);
 		return handleResult(bathroomSitePostBody, Status.OK);
 	}
 	
 	@GET
 	@Path("/")
 	public Response getBathroomSites(){
-
-		List<BathroomSitePostBody> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new BathroomSiteRowMapper());
+		List<Object> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new GenericRowMapper(new BathroomSitePostBody()));
 		return handleResult(bathroomSitePostBody, Status.OK);
 	}
 	
@@ -72,7 +70,6 @@ public class Webservices
 		
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new BathroomSitePostStatement(body), holder);
-		
 		return handleResult(new SuccessDataModel("Success", "200", holder.getKeys().get("id").toString()), Status.OK);
 	}
 	protected Response handleResult(final Object entity, Response.Status myStatus) {
