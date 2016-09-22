@@ -1,6 +1,7 @@
 package test_webservice.test;
 
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,15 +9,15 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
 public class GenericRowMapper implements RowMapper<Object> {
-	private Object object;
-	public GenericRowMapper(Object object){
-		this.object = object;
+	private Constructor<?> constructor;
+	public GenericRowMapper(Constructor<?> constructor){
+		this.constructor = constructor;
 	}
 	@Override
 	public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Object newObject = null;
 		try {
-			newObject = object.getClass().getConstructor().newInstance();
+			newObject = constructor.newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -52,15 +52,15 @@ public class Webservices
 	private Connection conn;
 	@GET
 	@Path("/{bathroomSiteId}")
-	public Response getBathroomSite(@PathParam("bathroomSiteId") int bathroomSiteId){
-		Object bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new GenericRowMapper(new BathroomSite()), bathroomSiteId);
+	public Response getBathroomSite(@PathParam("bathroomSiteId") int bathroomSiteId) throws Exception{
+		Object bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new GenericRowMapper(BathroomSite.class.getConstructor()), bathroomSiteId);
 		return handleResult(bathroomSitePostBody, Status.OK);
 	}
 	
 	@GET
 	@Path("/")
-	public Response getBathroomSites(){
-		List<Object> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new GenericRowMapper(new BathroomSite()));
+	public Response getBathroomSites() throws Exception{
+		List<Object> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new GenericRowMapper(BathroomSite.class.getConstructor()));
 		return handleResult(bathroomSitePostBody, Status.OK);
 	}
 	
