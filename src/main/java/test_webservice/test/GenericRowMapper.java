@@ -14,25 +14,23 @@ public class GenericRowMapper implements RowMapper<Object> {
 	}
 	@Override
 	public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-		//BathroomSitePostBody bathroomSitePostBody = new BathroomSitePostBody();
-		for (Field field : object.getClass().getDeclaredFields()) {
+		Object newObject = null;
+		try {
+			newObject = object.getClass().getConstructor().newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (Field field : newObject.getClass().getDeclaredFields()) {
 			if(field.getType().equals(int.class)){
-				set(object,field.getName(),rs.getInt(camelToSnake(field.getName())));
+				set(newObject,field.getName(),rs.getInt(camelToSnake(field.getName())));
 			} else if(field.getType().equals(String.class)){
-				set(object,field.getName(),rs.getString(camelToSnake(field.getName())));
+				set(newObject,field.getName(),rs.getString(camelToSnake(field.getName())));
 			} else if(field.getType().equals(double.class)){
-				set(object,field.getName(),rs.getDouble(camelToSnake(field.getName())));
+				set(newObject,field.getName(),rs.getDouble(camelToSnake(field.getName())));
 			}
-			
-			//bathroomSitePostBody.setId(rs.getInt("id"));
-			//bathroomSitePostBody.setGender(rs.getString("gender"));
-			//bathroomSitePostBody.setNumberStalls(rs.getInt("number_stalls"));
-			//bathroomSitePostBody.setNumberUrinals(rs.getInt("number_urinals"));
-			//bathroomSitePostBody.setLongitude(rs.getDouble("longitude"));
-			//bathroomSitePostBody.setLatitude(rs.getDouble("latitude"));
 		}
 
-		return object;
+		return newObject;
 
 	}
 	

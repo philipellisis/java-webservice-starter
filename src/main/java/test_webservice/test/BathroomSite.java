@@ -1,17 +1,18 @@
 package test_webservice.test;
 
-public class BathroomSitePostBody {
-	@Order(order=1)
+public class BathroomSite {
+	int id;
 	String gender;
-	@Order(order=2)
 	int numberStalls;
-	@Order(order=3)
 	int numberUrinals;
-	@Order(order=4)
 	double longitude;
-	@Order(order=5)
 	double latitude;
-
+	public int getId(){
+		return id;
+	}
+	public void setId(int id){
+		this.id = id;
+	}
 	public String getGender() {
 		return gender;
 	}
@@ -43,3 +44,4 @@ public class BathroomSitePostBody {
 		this.latitude = latitude;
 	}
 }
+
