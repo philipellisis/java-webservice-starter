@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -44,30 +45,30 @@ public class Webservices
 	
 	@Autowired
     public void setDataSource(DataSource dataSource) throws SQLException {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
         conn = dataSource.getConnection();
     }
 	
+
 	
 	private Connection conn;
 	@GET
 	@Path("/{bathroomSiteId}")
 	public Response getBathroomSite(@PathParam("bathroomSiteId") int bathroomSiteId) throws Exception{
-		Object bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new GenericRowMapper(BathroomSite.class.getConstructor()), bathroomSiteId);
+		Object bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new BeanPropertyRowMapper(BathroomSite.class), bathroomSiteId);
 		return handleResult(bathroomSitePostBody, Status.OK);
 	}
 	
 	@GET
 	@Path("/")
 	public Response getBathroomSites() throws Exception{
-		List<Object> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new GenericRowMapper(BathroomSite.class.getConstructor()));
+		List<Object> bathroomSitePostBody = jdbcTemplate.query("select * from toilet.bathroom_site", new BeanPropertyRowMapper(BathroomSite.class));
 		return handleResult(bathroomSitePostBody, Status.OK);
 	}
 	
 	@POST
 	@Path("/")
 	public Response materialpost(BathroomSitePostBody body){
-		
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new GenericPostGenerator(body,"insert into toilet.bathroom_site (gender, number_stalls, number_urinals, longitude, latitude) values (?,?,?,?,?)"), holder);
 		return handleResult(new SuccessDataModel("Success", "200", holder.getKeys().get("id").toString()), Status.OK);

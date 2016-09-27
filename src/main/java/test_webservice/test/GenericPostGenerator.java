@@ -25,13 +25,11 @@ public class GenericPostGenerator implements PreparedStatementCreator {
         for (Field field : fields) {
         	field.setAccessible(true);
         	try{
-			if(field.getType().equals(int.class)){
-				ps.setInt(i, field.getInt(body));
-			} else if(field.getType().equals(String.class)){
-				ps.setString(i, (String)field.get(body));
-			} else if(field.getType().equals(double.class)){
-				ps.setDouble(i, field.getDouble(body));
-			}
+        		if(field.get(body) != null){
+        			ps.setObject(i, field.get(body));
+        		}else{
+        			ps.setNull(i, 1);
+        		}
         	}
         	catch (IllegalAccessException e){
         		e.printStackTrace();

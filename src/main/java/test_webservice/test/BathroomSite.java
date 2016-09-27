@@ -3,10 +3,10 @@ package test_webservice.test;
 public class BathroomSite {
 	int id;
 	String gender;
-	int numberStalls;
-	int numberUrinals;
-	double longitude;
-	double latitude;
+	Integer numberStalls;
+	Integer numberUrinals;
+	Double longitude;
+	Double latitude;
 	public int getId(){
 		return id;
 	}
@@ -19,28 +19,28 @@ public class BathroomSite {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public int getNumberStalls() {
+	public Integer getNumberStalls() {
 		return numberStalls;
 	}
-	public void setNumberStalls(int numberStalls) {
+	public void setNumberStalls(Integer numberStalls) {
 		this.numberStalls = numberStalls;
 	}
-	public int getNumberUrinals() {
+	public Integer getNumberUrinals() {
 		return numberUrinals;
 	}
-	public void setNumberUrinals(int numberUrinals) {
+	public void setNumberUrinals(Integer numberUrinals) {
 		this.numberUrinals = numberUrinals;
 	}
-	public double getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(double longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
-	public double getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(double latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 }

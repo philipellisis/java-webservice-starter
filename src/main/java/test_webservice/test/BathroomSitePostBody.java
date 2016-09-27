@@ -4,13 +4,13 @@ public class BathroomSitePostBody {
 	@Order(order=1)
 	String gender;
 	@Order(order=2)
-	int numberStalls;
+	Integer numberStalls;
 	@Order(order=3)
-	int numberUrinals;
+	Integer numberUrinals;
 	@Order(order=4)
-	double longitude;
+	Double longitude;
 	@Order(order=5)
-	double latitude;
+	Double latitude;
 
 	public String getGender() {
 		return gender;
