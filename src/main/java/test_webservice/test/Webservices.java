@@ -9,6 +9,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -54,9 +55,17 @@ public class Webservices
 	private Connection conn;
 	@GET
 	@Path("/{bathroomSiteId}")
-	public Response getBathroomSite(@PathParam("bathroomSiteId") int bathroomSiteId) throws Exception{
-		Object bathroomSitePostBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new BeanPropertyRowMapper(BathroomSite.class), bathroomSiteId);
-		return handleResult(bathroomSitePostBody, Status.OK);
+	public Response getBathroomSite(@HeaderParam("Authorization") String oAuthToken, @PathParam("bathroomSiteId") int bathroomSiteId) throws Exception{
+		String user = Authorization.oAuthTokenValidator(oAuthToken);
+		if(user != null){
+			Object bathroomSiteGetBody = jdbcTemplate.queryForObject("select * from toilet.bathroom_site where bathroom_site.id = ?", new BeanPropertyRowMapper(BathroomSite.class), bathroomSiteId);
+			return handleResult(bathroomSiteGetBody, Status.OK);
+		}
+		else
+		{
+			return handleResult("unauthorized", Status.UNAUTHORIZED);
+		}
+		
 	}
 	
 	@GET
